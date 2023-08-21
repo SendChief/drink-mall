@@ -42,6 +42,7 @@ public class OrderTest {
     @Test
     public void testCreate() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
+        //mock测试数据
         OrderEntity order = new OrderEntity();
         OrderItemVo orderItem = new OrderItemVo();
         orderItem.setDrinkId("椰果奶茶");
@@ -51,6 +52,9 @@ public class OrderTest {
         orderItem.setMaterialIds(materialIds);
         order.setOrderItem(List.of(orderItem));
         String strJson = objectMapper.writeValueAsString(order);
+
+
+
         MvcResult mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.post("/order/create")
                                 .header("token", "订单")
