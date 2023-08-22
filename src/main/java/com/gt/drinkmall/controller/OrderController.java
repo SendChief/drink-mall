@@ -1,5 +1,6 @@
 package com.gt.drinkmall.controller;
 
+import com.gt.drinkmall.controller.dto.DrinkDto;
 import com.gt.drinkmall.controller.dto.OrderDto;
 import com.gt.drinkmall.module.drink.entity.DrinkEntity;
 import com.gt.drinkmall.module.drink.repo.DrinkRepo;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +112,21 @@ public class OrderController {
      * 这里应该组装dto偷个懒实在有点晚懒得写了
      */
     private void buildDto(OrderDto result, OrderEntity orderEntity, Map<String, MaterialEntity> material, Map<String, DrinkEntity> drink) {
+        List<DrinkDto> drinkDtoList = new ArrayList<>();
+        for (OrderItemVo orderItemVo : orderEntity.getOrderItem()) {
+            DrinkDto drinkDto = new DrinkDto();
+            var drinkEntity = drink.get(orderItemVo.getDrinkId());
+            drinkDto.setDrinkName(drinkEntity.getDrinkName());
+            drinkDto.setPrice(drinkEntity.getPrice());
+            drinkDto.setId(drinkEntity.getId());
 
+            List<MaterialEntity> materialEntities = new ArrayList<>();
+            for (String materialId : orderItemVo.getMaterialIds()) {
+                materialEntities.add(material.get(materialId));
+            }
+            drinkDto.setMaterials(materialEntities);
+            drinkDtoList.add(drinkDto);
+        }
+        result.setDrinkDtoList(drinkDtoList);
     }
 }

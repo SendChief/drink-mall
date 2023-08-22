@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -44,16 +45,9 @@ public class OrderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         //mock测试数据
         OrderEntity order = new OrderEntity();
-        OrderItemVo orderItem = new OrderItemVo();
-        orderItem.setDrinkId("椰果奶茶");
-        List<String> materialIds = new ArrayList<>();
-        materialIds.add("奥利奥奶盖");
-        materialIds.add("芝士奶盖");
-        orderItem.setMaterialIds(materialIds);
+        OrderItemVo orderItem = buildItem("椰果奶茶", "奥利奥奶盖");
         order.setOrderItem(List.of(orderItem));
         String strJson = objectMapper.writeValueAsString(order);
-
-
 
         MvcResult mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.post("/order/create")
@@ -67,6 +61,17 @@ public class OrderTest {
                 .andReturn();
 
         System.out.println("调用返回的结果：{}" + mvcResult.getResponse().getContentAsString());
+    }
+
+    /**
+     * build测试数据
+     */
+    private OrderItemVo buildItem(String drinkId, String... materialIds) {
+        OrderItemVo orderItem = new OrderItemVo();
+        orderItem.setDrinkId(drinkId);
+        List<String> materialIdList = new ArrayList<>(Arrays.asList(materialIds));
+        orderItem.setMaterialIds(materialIdList);
+        return orderItem;
     }
 
 }
